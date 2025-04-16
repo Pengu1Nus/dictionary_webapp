@@ -9,6 +9,7 @@ class Definition:
 
     def get(self):
         dataframe = pandas.read_csv('data.csv')
-        return tuple(
-            dataframe.loc[dataframe['word'] == self.term]['definition']
-        )
+        matched_rows = dataframe.loc[
+            dataframe['word'].str.contains(self.term, case=False, na=False)
+        ]
+        return tuple(matched_rows['definition'])
