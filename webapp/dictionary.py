@@ -1,38 +1,40 @@
 import justpy as jp
 
 import definition
+from webapp import layout, page
 
 
-class Dictionary:
+class Dictionary(page.Page):
     path = '/dictionary'
 
     @classmethod
-    def serve(cls):
+    def serve(cls, req):
         wp = jp.QuasarPage(tailwind=True)
-        div = jp.Div(a=wp, classes='bg-gray-200 h-screen')
+
+        lay = layout.DefaultLayout(a=wp)
+        container = jp.QPageContainer(a=lay)
+
+        div = jp.Div(a=container, classes='bg-gray-200 h-screen')
         jp.Div(
             a=div,
-            text='Мгновенный словарь терминов политологии',
-            classes='text-4xl m-2',
+            text='Словарь политологических терминов',
+            classes='text-4xl p-2',
         )
         jp.Div(
             a=div,
-            text='Определение для популярных терминов из политологии',
-            classes='text-lg',
+            text='Мгновенно получить определение слова/фразы из политологии.',
+            classes='text-lg p-2',
         )
 
         input_div = jp.Div(a=div, classes='grid grid-cols-2')
 
-        output_div = jp.Div(
-            a=div,
-            classes='m-2 p-2 text-lg border-2 h-40',
-        )
+        output_div = jp.Div(a=div, classes='m-2 p-2 text-lg border-2 h-40')
         input_box = jp.Input(
             a=input_div,
-            placeholder='Печать слова...',
+            placeholder='Печать слова или фразы...',
             outputdiv=output_div,
-            classes='m-2 bg-gray-100 border-2 border-gray-200 rounded w-64 '
-            'focus:bg-white focus:outline-none focus:border-purple-200 '
+            classes='m-2 bg-gray-100 border-2 border-gray-200 rounded w-128 '
+            'focus:bg-white focus:outline-none focus:border-purple-500 '
             'py-2 px-4',
         )
         input_box.on('input', cls.get_definition)
@@ -40,5 +42,5 @@ class Dictionary:
 
     @staticmethod
     def get_definition(widget, msg):
-        defined_word = definition.Definition(widget.value).get()
-        widget.outputdiv.text = ' '.join(defined_word)
+        defined = definition.Definition(widget.value).get()
+        widget.outputdiv.text = ' '.join(defined)
